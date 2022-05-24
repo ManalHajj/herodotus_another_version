@@ -2,7 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import 'my_flutter_app_icons.dart';
+
 class PlacedetailsWidget extends StatefulWidget {
+  //final String id;
+  //PlacedetailsWidget(this.id);
   @override
   _PlacedetailsWidgetState createState() => _PlacedetailsWidgetState();
 }
@@ -138,6 +142,16 @@ class _PlacedetailsWidgetState extends State<PlacedetailsWidget> {
                             style: TextStyle(
                               fontFamily: 'Metropolis',
                               fontSize: 14,
+                            )),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: IconButton(
+                            padding: EdgeInsets.only(left: 20, top: 100),
+                            onPressed: () {},
+                            icon: Icon(
+                              MyFlutterApp.comments,
+                              size: 30,
                             )),
                       )
                     ],
