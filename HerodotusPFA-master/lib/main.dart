@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'DetailsScreen.dart';
+import 'home/SearchBar.dart';
 import 'signin/user_state.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -60,7 +61,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: PlacedetailsWidget(),
+      home: SearchBar(),
+      //PlacedetailsWidget(),
       //UserState(),
     );
     //},

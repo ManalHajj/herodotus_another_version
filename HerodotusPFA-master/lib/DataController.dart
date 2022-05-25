@@ -14,6 +14,7 @@ class DataController extends GetxController {
     return FirebaseFirestore.instance
         .collection('sites')
         .where('name', isGreaterThanOrEqualTo: queryString)
+        .where('name', isLessThanOrEqualTo: queryString + '\uf8ff')
         .get();
   }
 }
