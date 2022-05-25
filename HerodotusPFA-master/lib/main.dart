@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'DetailsScreen.dart';
+import 'feed_screen.dart';
 import 'home/SearchBar.dart';
 import 'signin/user_state.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -61,7 +62,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: SearchBar(),
+      home: FeedScreen(),
+      //SearchBar(),
       //PlacedetailsWidget(),
       //UserState(),
     );
