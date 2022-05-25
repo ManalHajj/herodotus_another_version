@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -8,6 +9,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+
+import 'home_page_icons_icons.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -99,10 +102,14 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             );
           }),
-      bottomNavigationBar: Container(
-        height: kToolbarHeight,
-        color: Colors.blue,
-      ),
+      bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: const Color(0xff699BF7),
+          onTap: (index) {},
+          items: <Widget>[
+            Icon(Icons.location_on, size: 30),
+            Icon(Icons.home, size: 30),
+            Icon(Icons.person, size: 30),
+          ]),
     );
   }
 }
