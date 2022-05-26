@@ -10,6 +10,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
+import 'Entities/Site.dart';
 import 'home_page_icons_icons.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -20,87 +21,113 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  //late QuerySnapshot snapshotData;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feed'),
+        backgroundColor: Colors.white,
+        title: const Text('                             Feed',
+            style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.search, color: Colors.black),
+        ),
       ),
-      body: ListView.builder(
-          //itemCount: snapshotData.docs.length,
-          itemExtent: 350,
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemBuilder: (context, index) {
-            // final place = snapshotData?.docs[index];
-            return Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                      image: NetworkImage(
-                          'https://www.maroc-hebdo.press.ma/files/2015/12/casa.jpg'),
-                      fit: BoxFit.cover,
-                      colorFilter:
-                          ColorFilter.mode(Colors.black26, BlendMode.darken))),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(//users image
-                          'https://shonakid.de/wp-content/uploads/2018/09/Killua-killua-zoldyck-2011-34976283-1280-720.jpg'),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('sites').snapshots(),
+          builder: (context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemExtent: 350,
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                            image: NetworkImage(
+                                snapshot.data!.docs[index].data()['images'][0]),
+                            fit: BoxFit.cover,
+                            colorFilter: ColorFilter.mode(
+                                Colors.black26, BlendMode.darken))),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'username here',
-                          style: TextStyle(color: Colors.black),
-                        )
-                      ],
-                    ),
-                    /* for admin :  
+                        Row(children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(//users image
+                                'https://images.unsplash.com/photo-1605993439219-9d09d2020fa5?crop=entropy&cs=tinysrgb&fm=jpg&ixlib=rb-1.2.1&q=80&raw_url=true&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387'),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Username here',
+                                style: TextStyle(color: Colors.black),
+                              )
+                            ],
+                          ),
+                          /* for admin :  
                          Spacer(),
                           IconButton(onPressed: (){
 
                           }, icon: const Icon(Icons.more_horiz,
                           color: Colors.white)) ,*/
-                  ]),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 50),
-                    child: Text(
-                      'name of site here',
-                      textAlign: TextAlign.center,
+                        ]),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: Text(
+                            //'Monument name here',
 
-                      //place[index]['name'],
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Metropolis',
-                          fontSize: 24),
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      TextButton.icon(
-                          onPressed: () {},
-                          style: TextButton.styleFrom(
-                            primary: Colors.black,
-                            shape: const StadiumBorder(),
+                            snapshot.data!.docs[index].data()['title'],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Outfit',
+                                fontSize: 30),
                           ),
-                          icon: const Icon(Icons.star),
-                          label: Text('rating here'
-                              //place[index]['rating']
-                              ))
-                    ],
-                  )
-                ],
-              ),
-            );
+                        ),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            TextButton.icon(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                primary: Color.fromARGB(255, 202, 202, 93),
+                                shape: const StadiumBorder(),
+                              ),
+                              icon: const Icon(Icons.star),
+                              label: Text(
+                                snapshot.data!.docs[index]
+                                    .data()['rating']
+                                    .toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: 'Outfit',
+                                    fontSize: 17),
+                              ),
+                              //label: Text(place[index]['rating'])
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
           }),
       bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: const Color(0xff699BF7),

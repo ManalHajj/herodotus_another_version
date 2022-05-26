@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Comments.dart';
 import 'DetailsScreen.dart';
 import 'feed_screen.dart';
 import 'home/SearchBar.dart';
@@ -62,7 +63,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: FeedScreen(),
+      home:
+          //CommentScreen(),
+
+          FeedScreen(),
       //SearchBar(),
       //PlacedetailsWidget(),
       //UserState(),

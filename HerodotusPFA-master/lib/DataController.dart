@@ -4,10 +4,9 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class DataController extends GetxController {
-  Future getData(String sites) async {
+  Future getData(String collection) async {
     final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    QuerySnapshot snapshot = await firebaseFirestore.collection(sites).get();
-    return snapshot.docs;
+    return await firebaseFirestore.collection(collection).get();
   }
 
   Future queryData(String queryString) async {
