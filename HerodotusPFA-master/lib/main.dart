@@ -63,10 +63,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home:
-          //CommentScreen(),
+      home: PlaceDetailScreen(),
+      //CommentScreen(),
 
-          FeedScreen(),
+      //FeedScreen(),
       //SearchBar(),
       //PlacedetailsWidget(),
       //UserState(),

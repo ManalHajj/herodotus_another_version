@@ -55,7 +55,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     margin: const EdgeInsets.only(bottom: 20),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(30),
                         image: DecorationImage(
                             image: NetworkImage(
                                 snapshot.data!.docs[index].data()['images'][0]),
@@ -76,7 +76,7 @@ class _FeedScreenState extends State<FeedScreen> {
                             children: [
                               Text(
                                 'Username here',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(color: Colors.white),
                               )
                             ],
                           ),

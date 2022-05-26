@@ -1,165 +1,122 @@
+import 'dart:ui';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
+import 'Animated_detail_header.dart';
 import 'my_flutter_app_icons.dart';
 
-class PlacedetailsWidget extends StatefulWidget {
-  //final String id;
-  //PlacedetailsWidget(this.id);
+class PlaceDetailScreen extends StatefulWidget {
+  const PlaceDetailScreen({Key? key}) : super(key: key);
+
   @override
-  _PlacedetailsWidgetState createState() => _PlacedetailsWidgetState();
+  State<PlaceDetailScreen> createState() => _PlaceDetailScreenState();
 }
 
-class _PlacedetailsWidgetState extends State<PlacedetailsWidget> {
+class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView(
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage("assets/images/Herodotus.png"),
-            fit: BoxFit.cover,
-          )),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: IconButton(
-                    onPressed: () => {Navigator.pop(context)},
-                    icon: Icon(
-                      Icons.chevron_left,
-                      color: Colors.white70,
-                      size: 70,
-                    )),
-              ),
-              Container(
-                  height: 550,
-                  padding: EdgeInsets.only(top: 40),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(40),
-                          topRight: Radius.circular(40)),
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            //Colors.white70,
-                            Colors.white70,
-                            Color.fromARGB(255, 255, 255, 255),
-                          ])),
-                  child: ListView(
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('sites').snapshots(),
+          builder: (context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: BuilderPersistantDelegate(
+                      maxExtent: MediaQuery.of(context).size.height,
+                      minExtent: 240,
+                      builder: (percent) {
+                        return AnimatedDetailHeader(
+                          topPercent: ((1 - percent) / .7.clamp(0.0, 1.0)),
+                          bottomPercent: (percent / .3).clamp(0.0, 1.0),
+                          snapshot: snapshot,
+                        );
+                      }),
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 30),
-                        child: Text('Jasper park',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontFamily: 'Metropolis',
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                height: 1.5)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30, top: 20),
-                        child: RatingBar.builder(
-                          glow: false,
-                          itemSize: 30,
-                          initialRating: 3,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          unratedColor: Color.fromARGB(255, 243, 243, 243),
-                          itemPadding:
-                              const EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Color(0xFFF1C644),
-                          ),
-                          onRatingUpdate: (rating) {
-                            setState(() {
-                              // _rating = rating;
-                            });
-                          },
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.black26,
+                            ),
+                            Flexible(
+                              child: Text(
+                                snapshot.data!.docs[0].data()['address'],
+                                style: TextStyle(
+                                    color: Colors.blue,
+                                    fontFamily: 'Outfit',
+                                    fontSize: 17),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30, top: 20),
-                        child: RatingBar.builder(
-                          glow: false,
-                          itemSize: 30,
-                          initialRating: 3,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            switch (index) {
-                              case 0:
-                                return const Icon(
-                                  Icons.sentiment_very_dissatisfied,
-                                  color: Colors.red,
-                                );
-                              case 1:
-                                return const Icon(
-                                  Icons.sentiment_dissatisfied,
-                                  color: Colors.redAccent,
-                                );
-                              case 2:
-                                return const Icon(
-                                  Icons.sentiment_neutral,
-                                  color: Colors.amber,
-                                );
-                              case 3:
-                                return const Icon(
-                                  Icons.sentiment_satisfied,
-                                  color: Colors.lightGreen,
-                                );
-                              default:
-                                return const Icon(
-                                  Icons.sentiment_very_satisfied,
-                                  color: Colors.green,
-                                );
-                            }
-                          },
-                          onRatingUpdate: (rating) {
-                            setState(() {
-                              //_danger = rating.round();
-                            });
-                          },
-                        ),
+                      const SizedBox(
+                        height: 10,
                       ),
-                      SizedBox(height: 10),
                       Padding(
-                        padding:
-                            const EdgeInsets.only(left: 30, right: 30, top: 30),
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: Text(
-                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ac velit in nascetur pulvinar dignissim. Lectus elit odio hendrerit vel sed ',
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontFamily: 'Metropolis',
-                              fontSize: 14,
-                            )),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: IconButton(
-                            padding: EdgeInsets.only(left: 20, top: 100),
-                            onPressed: () {},
-                            icon: Icon(
-                              MyFlutterApp.comments,
-                              size: 30,
-                            )),
+                          snapshot.data!.docs[0].data()['description'],
+                        ),
                       )
                     ],
-                  ))
-            ],
-          ),
-        )
-      ],
-    ));
+                  ),
+                ),
+              ],
+            );
+          }),
+    );
+  }
+}
+
+class BuilderPersistantDelegate extends SliverPersistentHeaderDelegate {
+  final double _maxExtent;
+  final double _minExtent;
+  final Widget Function(double percent) builder;
+
+  BuilderPersistantDelegate(
+      {required double maxExtent,
+      required double minExtent,
+      required this.builder})
+      : _maxExtent = maxExtent,
+        _minExtent = minExtent;
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // TODO: implement build
+    return builder(shrinkOffset / _maxExtent);
+  }
+
+  @override
+  // TODO: implement maxExtent
+  double get maxExtent => _maxExtent;
+
+  @override
+  // TODO: implement minExtent
+  double get minExtent => _minExtent;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }
