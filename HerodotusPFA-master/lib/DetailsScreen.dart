@@ -78,6 +78,16 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                         child: Text(
                           snapshot.data!.docs[0].data()['description'],
                         ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: IconButton(
+                            padding: EdgeInsets.only(left: 40, top: 30),
+                            onPressed: () {},
+                            icon: Icon(
+                              MyFlutterApp.comments,
+                              size: 30,
+                            )),
                       )
                     ],
                   ),

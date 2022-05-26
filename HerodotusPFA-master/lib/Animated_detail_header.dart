@@ -56,14 +56,14 @@ class AnimatedDetailHeader extends StatelessWidget {
                         ),
                         icon: const Icon(
                           Icons.star,
-                          size: 50,
+                          size: 40,
                         ),
                         label: Text(
                             snapshot.data!.docs[0].data()['rating'].toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Outfit',
-                                fontSize: 17))),
+                                fontSize: 20))),
                     TextButton.icon(
                         onPressed: () {},
                         style: TextButton.styleFrom(
@@ -72,14 +72,14 @@ class AnimatedDetailHeader extends StatelessWidget {
                         ),
                         icon: const Icon(
                           Icons.sentiment_very_dissatisfied,
-                          size: 50,
+                          size: 40,
                         ),
                         label: Text(
                             snapshot.data!.docs[0].data()['danger'].toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontFamily: 'Outfit',
-                                fontSize: 17))),
+                                fontSize: 20))),
                     const Spacer(),
                   ],
                 ),
