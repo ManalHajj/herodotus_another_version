@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../Feed/feed_screen.dart';
 import '../home/HomeMap.dart';
 import 'Forgot_pass.dart';
 import 'package:fluttertoast/fluttertoast.dart';

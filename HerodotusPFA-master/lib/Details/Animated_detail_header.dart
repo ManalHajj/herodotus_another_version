@@ -55,7 +55,7 @@ class AnimatedDetailHeader extends StatelessWidget {
                     TextButton.icon(
                         onPressed: () {},
                         style: TextButton.styleFrom(
-                          primary: Color.fromARGB(255, 202, 202, 93),
+                          primary: Color.fromARGB(255, 240, 240, 149),
                           shape: const StadiumBorder(),
                         ),
                         icon: const Icon(
@@ -70,7 +70,7 @@ class AnimatedDetailHeader extends StatelessWidget {
                     TextButton.icon(
                         onPressed: () {},
                         style: TextButton.styleFrom(
-                          primary: Colors.red,
+                          primary: Color.fromARGB(250, 196, 33, 33),
                           shape: const StadiumBorder(),
                         ),
                         icon: const Icon(
@@ -83,6 +83,17 @@ class AnimatedDetailHeader extends StatelessWidget {
                                 fontFamily: 'Outfit',
                                 fontSize: 20))),
                     const Spacer(),
+                    MaterialButton(
+                      onPressed: () {},
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.bookmark_add_outlined,
+                        size: 27,
+                      ),
+                      padding: EdgeInsets.all(16),
+                      shape: CircleBorder(),
+                    ),
                   ],
                 ),
               ),

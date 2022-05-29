@@ -41,6 +41,7 @@ class _FeedScreenState extends State<FeedScreen> {
     );
   }
 
+  var _value;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,6 +109,20 @@ class _FeedScreenState extends State<FeedScreen> {
                                 )
                               ],
                             ),
+                            Spacer(),
+                            PopupMenuButton(
+                                onSelected: (value) {
+                                  setState(() {
+                                    _value = value;
+                                  });
+                                },
+                                icon: Icon(Icons.more_horiz),
+                                itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        child: Text("Report"),
+                                        value: "Report",
+                                      ),
+                                    ])
                             /* for admin :  
                            Spacer(),
                             IconButton(onPressed: (){
