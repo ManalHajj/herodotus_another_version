@@ -50,6 +50,10 @@ dependencies:
   flutter_google_places: ^0.3.0
   get: ^4.6.5
   firestore_search: ^0.1.9
+  geocoder: ^0.2.1
+  shared_preferences: ^2.0.15
+  shared_preferences_web: ^2.0.4
+  uuid: ^3.0.6
 
 
 

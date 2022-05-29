@@ -304,7 +304,9 @@ class _signInState extends State<signIn> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => HomePage(
+              siteList: [],
+            ),
           ));
     } else {
       ///  User is trying to sign-up for first time
@@ -323,7 +325,9 @@ class _signInState extends State<signIn> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomePage(),
+                    builder: (context) => HomePage(
+                      siteList: [],
+                    ),
                   ))
             })
         .catchError((e) {

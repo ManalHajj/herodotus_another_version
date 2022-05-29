@@ -1,4 +1,5 @@
 // ignore: file_names
+
 import 'dart:io';
 import 'dart:async';
 import 'dart:math';
@@ -9,68 +10,108 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter_platform_interface/src/types/location.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map/home/HomePage.dart';
+import 'package:uuid/uuid.dart';
+
 import '../Entities/Site.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:geocoder/geocoder.dart';
 
 class AddScreen extends StatefulWidget {
-  const AddScreen({Key? key, LatLng? coor}) : super(key: key);
+  const AddScreen({Key? key, required this.coor}) : super(key: key);
 
-  LatLng? get coor => this.coor;
+  final LatLng coor;
 
   @override
   State<AddScreen> createState() => _AddScreenState();
 }
 
 class _AddScreenState extends State<AddScreen> {
-  double _rating = 5;
-  int _danger = 5;
+  double _rating = 2.5;
+  int _danger = 3;
+  late final String _address;
   final TextEditingController _titleController = new TextEditingController();
   final TextEditingController _descriptionController =
       new TextEditingController();
   final Set<File> _images = {};
   final Set<String> _imagesUrl = {};
 
+  void _getAdress() async {
+    final coordinates =
+        new Coordinates(widget.coor.latitude, widget.coor.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var first = addresses.first;
+    _address = first.addressLine;
+    print("adresse: " + _address);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAdress();
+    print("PoPo " + widget.coor.latitude.toString());
+  }
+
   Future saveAndGo() {
-    setMapForImages();
+    saveAllInfos(Uuid().v1());
     return Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => HomePage(coor: widget.coor)),
+      MaterialPageRoute(
+          builder: (context) => HomePage(
+                siteList: [],
+              )),
     );
   }
 
-  void _registerSite() async {
-    Site? site;
-    site!.name = _titleController.text;
-    site.rating = _rating;
-    site.danger = _danger;
-    site.description = _titleController.text;
-    site.coordinates = widget.coor;
+  void _registerSite(String id) async {
+    Site? site = new Site(
+      id: id,
+      title: _titleController.text,
+      address: _address,
+      rating: _rating,
+      danger: _danger,
+      description: _descriptionController.text,
+      coordinates: new LatLng(widget.coor.latitude, widget.coor.longitude),
+    );
 
     saveSiteInfoToFirestore(site);
   }
 
   Future saveSiteInfoToFirestore(Site site) async {
-    FirebaseFirestore.instance.collection("users").doc(site.id).set({
-      "id": site.id.toString(),
-      "name": site.name!.trim(),
+    print("lat here" + site.coordinates!.latitude.toString());
+    GeoPoint gp =
+        new GeoPoint(site.coordinates!.latitude, site.coordinates!.longitude);
+    FirebaseFirestore.instance.collection("sites").doc(site.id).set({
+      "id": site.id,
+      "title": site.title!.trim(),
+      "address": site.address!.trim(),
       "rating": (site.rating! * pow(10, 5)).round().toDouble() / pow(10, 5),
       "danger": site.danger,
       "description": site.description!.trim(),
-      "coordinates": site.coordinates,
-      "images": _imagesUrl,
+      "coordinates": gp,
+      "images": _imagesUrl.toList(),
+      "savedSites": [],
+      "user": "",
+      "reported": 0
+    });
+
+    print("My boo I am okey");
+  }
+
+  void saveAllInfos(String id) {
+    if (_images.isEmpty) {
+      _registerSite(id);
+      return;
+    }
+
+    _images.forEach((e) async {
+      await uploadToStorage(Uuid().v4(), e)
+          .whenComplete(() => _registerSite(id));
     });
   }
 
-  void setMapForImages() {
-    int i = 0;
-    _images.forEach((e) {
-      uploadToStorage(
-          (DateTime.now().millisecondsSinceEpoch + i++).toString(), e);
-    });
-  }
-
-  uploadToStorage(String imageName, File imageFile) async {
+  Future<void> uploadToStorage(String imageName, File imageFile) async {
     firebase_storage.Reference storageReference =
         firebase_storage.FirebaseStorage.instance.ref(imageName);
     firebase_storage.UploadTask uploadTask =
@@ -79,9 +120,9 @@ class _AddScreenState extends State<AddScreen> {
     await uploadTask.whenComplete(() => null);
 
     await storageReference.getDownloadURL().then((urlImage) {
+      print("My boo " + urlImage);
       _imagesUrl.add(urlImage);
     });
-    _registerSite();
   }
 
   Future pickImage() async {

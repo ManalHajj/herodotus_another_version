@@ -459,7 +459,9 @@ class _RegisterState extends State<Register> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => HomePage(
+              siteList: [],
+            ),
           ));
     }).catchError((e) {
       Fluttertoast.showToast(msg: e!.message);
