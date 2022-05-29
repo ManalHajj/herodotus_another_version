@@ -142,21 +142,29 @@ class _signInState extends State<signIn> {
                 child: ButtonTheme(
                   minWidth: 350.0,
                   height: 70.0,
-                  child: TextButton(
-                    onPressed: () {
-                      authentication(
-                          emailController.text, passwordController.text);
-                    },
-                    child: Text("Sign in",
-                        style: GoogleFonts.outfit(
-                            textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black))),
-                    /* color: const Color(0xff699BF7),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0))
-                          */
+                  child: SizedBox(
+                    height: 70,
+                    width: 300,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xff699BF7),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0))),
+                      onPressed: () {
+                        authentication(
+                            emailController.text, passwordController.text);
+                      },
+                      child: Text("Sign in",
+                          style: GoogleFonts.outfit(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white))),
+                      /* color: const Color(0xff699BF7),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0))
+                            */
+                    ),
                   ),
                 )),
           ),

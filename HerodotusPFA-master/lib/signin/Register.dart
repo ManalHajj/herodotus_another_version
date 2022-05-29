@@ -237,23 +237,31 @@ class _RegisterState extends State<Register> {
         )),
         SafeArea(
           child: Container(
-              margin: EdgeInsets.only(left: 70, top: 10),
+              margin: EdgeInsets.only(left: 70, top: 20),
               child: ButtonTheme(
                 minWidth: 350.0,
                 height: 70.0,
-                child: TextButton(
-                  onPressed: () {
-                    uploadAndSaveImage();
-                  },
-                  child: Text("Register",
-                      style: GoogleFonts.outfit(
-                          textStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white))),
-                  /*color: const Color(0xff699BF7),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0))*/
+                child: SizedBox(
+                  height: 70,
+                  width: 350,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                        backgroundColor: const Color(0xff699BF7),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0))),
+                    onPressed: () {
+                      uploadAndSaveImage();
+                    },
+                    child: Text("Register",
+                        style: GoogleFonts.outfit(
+                            textStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white))),
+                    /*color: const Color(0xff699BF7),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0))*/
+                  ),
                 ),
               )),
         ),
@@ -262,7 +270,7 @@ class _RegisterState extends State<Register> {
           children: [
             SafeArea(
                 child: Container(
-                    margin: EdgeInsets.only(top: 5),
+                    margin: EdgeInsets.only(top: 10),
                     child: Transform.rotate(
                       angle: 180 * (3.14 / 180),
                       child: Container(
@@ -282,7 +290,7 @@ class _RegisterState extends State<Register> {
                     ))),
             SafeArea(
               child: Container(
-                margin: EdgeInsets.only(left: 9.5, right: 9.5, top: 5),
+                margin: EdgeInsets.only(left: 9.5, right: 9.5, top: 10),
                 child: Text(
                   'Or Sign in With',
                   textAlign: TextAlign.center,
@@ -297,7 +305,7 @@ class _RegisterState extends State<Register> {
             ),
             SafeArea(
                 child: Container(
-                    margin: EdgeInsets.only(top: 5),
+                    margin: EdgeInsets.only(top: 10),
                     child: Transform.rotate(
                       angle: 0,
                       child: Container(

@@ -51,52 +51,68 @@ class intro extends StatelessWidget {
               ButtonTheme(
                   minWidth: 200.0,
                   height: 70.0,
-                  child: TextButton(
-                    onPressed: () {
-                      //signOutGoogle();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return signIn();
-                          },
-                        ),
-                      );
-                    },
-                    child: Text("Sign in",
-                        style: GoogleFonts.outfit(
-                            textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white))),
-                    /*color: const Color(0xff699BF7),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0)),*/
+                  child: SizedBox(
+                    height: 70,
+                    width: 200,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xff699BF7),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0))),
+                      onPressed: () {
+                        //signOutGoogle();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return signIn();
+                            },
+                          ),
+                        );
+                      },
+                      child: Text("Sign in",
+                          style: GoogleFonts.outfit(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white))),
+                      /*color: const Color(0xff699BF7),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0)),*/
+                    ),
                   )),
               ButtonTheme(
                   minWidth: 200.0,
                   height: 70.0,
-                  child: TextButton(
-                    onPressed: () {
-                      //signOutGoogle();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Register();
-                          },
-                        ),
-                      );
-                    },
-                    child: Text("Register",
-                        style: GoogleFonts.outfit(
-                            textStyle: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black))),
-                    /*color: const Color(0xffF3F3F3),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0))),*/
+                  child: SizedBox(
+                    height: 70,
+                    width: 200,
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xffF3F3F3),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0))),
+                      onPressed: () {
+                        //signOutGoogle();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Register();
+                            },
+                          ),
+                        );
+                      },
+                      child: Text("Register",
+                          style: GoogleFonts.outfit(
+                              textStyle: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black))),
+                      /*color: const Color(0xffF3F3F3),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0))),*/
+                    ),
                   ))
             ],
           ),
