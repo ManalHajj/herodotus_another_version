@@ -8,23 +8,29 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:map/Add/addScreen.dart';
-import 'package:map/SideBar.dart';
+import 'package:map/home/MapPreferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' as ui;
 
+import '../Details/DetailsScreen.dart';
+import '../Entities/Site.dart';
 import '../home_page_icons_icons.dart';
 import 'HomeMap.dart';
 import 'SearchBar.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, LatLng? coor}) : super(key: key);
+  const HomePage({Key? key, required this.siteList}) : super(key: key);
 
-  get coor => this.coor;
+  final List<Site> siteList;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  MapType _mapType = MapType.normal;
+  double _layersIconRightFlow = 0;
+  double _layersIconBottomFlow = 90;
   LatLng? _selectedLocation;
   final int _speed = 250;
   double _addPadding = -100;
@@ -37,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   Marker? _destination;
   late Uint8List markerIcon;
   late Uint8List lastPosMarkerIcon;
+  late Uint8List mySiteMarkerIcon;
   //late Marker marker;
   StreamSubscription<LocationData>? _locationListener = null;
 
@@ -46,11 +53,36 @@ class _HomePageState extends State<HomePage> {
     color: Colors.white,
   );
 
+  List<Marker> addSearchedSites() {
+    List<Marker> sites = [];
+
+    widget.siteList.forEach((element) {
+      sites.add(new Marker(
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          markerId: MarkerId(element.id!),
+          position: element.coordinates!,
+          onTap: () {
+            MapPreferences.setLocation(element.coordinates!);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetailsScreen(
+                        site: element,
+                      )),
+            );
+          }));
+    });
+
+    return sites;
+  }
+
   void getLocation() async {
     //var location = await currentLocation.getLocation();
     lastPosMarkerIcon =
         await getBytesFromAsset("assets/images/lastPosMarker.png", 100);
     markerIcon = await getBytesFromAsset("assets/images/marker.png", 100);
+    mySiteMarkerIcon =
+        await getBytesFromAsset("assets/images/my-site-marker.png", 80);
     setState(() {
       _locationListener =
           currentLocation.onLocationChanged.listen((LocationData loc) {
@@ -65,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             icon: BitmapDescriptor.fromBytes(markerIcon),
             markerId: const MarkerId("Me"),
             position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)));
-
+        _markers.addAll(addSearchedSites());
         _locationListener?.cancel();
       });
     });
@@ -100,7 +132,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _addPadding = -100;
       _bottomPadding = -_bottomPadding;
-
+      _layersIconRightFlow = (_layersIconRightFlow - 100).abs();
+      _layersIconBottomFlow = 90;
       if (_buttonPadding > 0) _buttonPadding = 0;
     });
   }
@@ -138,9 +171,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _destination = Marker(
         markerId: const MarkerId('destination'),
-        icon: BitmapDescriptor.fromBytes(markerIcon),
+        icon: BitmapDescriptor.fromBytes(mySiteMarkerIcon),
         position: ll,
       );
+      _markers.add(_destination!);
+      _layersIconRightFlow = 0;
+      _layersIconBottomFlow = 170;
       _selectedLocation = ll;
       _addPadding = -20;
       _buttonPadding = 80;
@@ -158,12 +194,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(children: [
         Scaffold(
-            drawer: SideBar(),
             body: GoogleMap(
+              mapType: MapPreferences.getMapType(),
               compassEnabled: true,
               zoomControlsEnabled: false,
               initialCameraPosition: CameraPosition(
-                target: const LatLng(37.773972, -122.431297),
+                target: MapPreferences.getLocation(),
                 zoom: _zoomState,
               ),
               onMapCreated: (GoogleMapController controller) {
@@ -189,6 +225,33 @@ class _HomePageState extends State<HomePage> {
             )),
         SearchBar(
           bottomPadding: _bottomPadding,
+        ),
+        AnimatedPositioned(
+          duration: Duration(milliseconds: _speed),
+          bottom: _layersIconBottomFlow,
+          right: -_layersIconRightFlow,
+          child: Container(
+              child: RawMaterialButton(
+            onPressed: () {
+              setState(() {
+                if (_mapType == MapType.normal) {
+                  _mapType = MapType.satellite;
+                  MapPreferences.setMapType("satellite");
+                } else {
+                  _mapType = MapType.normal;
+                  MapPreferences.setMapType("normal");
+                }
+              });
+            },
+            elevation: 2.0,
+            fillColor: Colors.white,
+            child: Icon(
+              Icons.layers,
+              size: 27.0,
+            ),
+            padding: EdgeInsets.all(15.0),
+            shape: CircleBorder(),
+          )),
         ),
         if (_selectedLocation != null)
           AnimatedPositioned(
@@ -229,14 +292,18 @@ class _HomePageState extends State<HomePage> {
                                       child: Container(
                                           padding: EdgeInsets.all(5),
                                           child: TextButton(
-                                            onPressed: () => {
+                                            onPressed: () {
+                                              MapPreferences.setLocation(
+                                                  _selectedLocation!);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (context) => AddScreen(
-                                                        coor:
-                                                            _selectedLocation)),
-                                              )
+                                                    builder: (context) =>
+                                                        AddScreen(
+                                                          coor:
+                                                              _selectedLocation!,
+                                                        )),
+                                              );
                                             },
                                             child: Text(
                                               "Add +",

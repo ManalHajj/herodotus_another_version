@@ -9,6 +9,7 @@ import 'package:map/Entities/Site.dart';
 import 'package:map/home/MapPreferences.dart';
 
 import '../home/HomePage.dart';
+import '../my_flutter_app_icons.dart';
 import 'Animated_detail_header.dart';
 import 'Comments.dart';
 //import 'my_flutter_app_icons.dart';
@@ -113,8 +114,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               );
                             },
                             icon: Icon(
-                              //MyFlutterApp.comments,
-                              Icons.message,
+                              MyFlutterApp.comments,
                               size: 30,
                             )),
                       )
