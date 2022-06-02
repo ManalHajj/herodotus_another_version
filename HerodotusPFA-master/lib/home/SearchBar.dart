@@ -1,8 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map/DataController.dart';
 
+import '../Entities/Site.dart';
 import 'HomePage.dart';
 
 class SearchBar extends StatefulWidget {
@@ -17,42 +22,40 @@ class _SearchBarState extends State<SearchBar> {
   final TextEditingController searchController = TextEditingController();
   late QuerySnapshot snapshotData;
   bool isExecuted = false;
+  DataController dataController = new DataController();
+
+  Future<void> showTheseSites(String queryText) async {
+    dataController.queryData(queryText).then((value) {
+      snapshotData = value;
+      return mapToSite();
+    }).then((value) {
+      return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomePage(
+                  siteList: value,
+                )),
+      );
+    });
+  }
+
+  List<Site> mapToSite() {
+    List<Site> sites = [];
+
+    print("here I am " + snapshotData.docs.length.toString());
+    snapshotData.docs.forEach((snap) {
+      sites.add(Site.queryToSite(snap));
+    });
+
+    print("here ; " + sites.length.toString());
+
+    return sites;
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget searchData() {
-      return ListView.builder(
-        itemCount: snapshotData.docs.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                  (snapshotData.docs[index]['images'].length != 0)
-                      ? snapshotData.docs[index]['images'][0]
-                      : ""),
-            ),
-            title: Text(
-              snapshotData.docs[index]['name'],
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0),
-            ),
-          );
-        },
-      );
-    }
-
-    return Scaffold(
-        floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.clear),
-            onPressed: () {
-              setState(() {
-                isExecuted = false;
-              });
-            }),
-
-        /*duration: Duration(milliseconds: 250),
+    return AnimatedPositioned(
+        duration: Duration(milliseconds: 250),
         top: widget.bottomPadding,
         child: AnimatedContainer(
           duration: Duration(milliseconds: 400),
@@ -62,41 +65,17 @@ class _SearchBarState extends State<SearchBar> {
             right: 20,
           ),
           child: TextField(
-              cursorHeight: 20,
-              cursorColor: const Color(0xFF44AEF4),
-              decoration: InputDecoration(
-                isDense: true,
-                fillColor: const Color.fromRGBO(220, 220, 220, 0.7),
-                filled: true,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                hintText: 'Find a site',
-              ),*/
-        appBar: AppBar(
-          actions: [
-            GetBuilder<DataController>(
-                init: DataController(),
-                builder: (val) {
-                  return IconButton(
-                    onPressed: () {
-                      val.queryData(searchController.text).then((value) {
-                        snapshotData = value;
-                        setState(() {
-                          isExecuted = true;
-                        });
-                      });
-                    },
-                    icon: Icon(Icons.search),
-                  );
-                })
-          ],
-          title: TextField(
             cursorHeight: 20,
             cursorColor: const Color(0xFF44AEF4),
+            onSubmitted: (queryText) {
+              showTheseSites(queryText);
+            },
             decoration: InputDecoration(
               isDense: true,
+              prefixIcon: const Icon(
+                Icons.search,
+                size: 24.0,
+              ),
               fillColor: const Color.fromRGBO(220, 220, 220, 0.7),
               filled: true,
               border: OutlineInputBorder(
@@ -105,14 +84,7 @@ class _SearchBarState extends State<SearchBar> {
               ),
               hintText: 'Find a site',
             ),
-            controller: searchController,
           ),
-        ),
-        body: isExecuted
-            ? searchData()
-            : Container(
-                child: Center(
-                    child: Text('Search for something',
-                        style: TextStyle(color: Colors.black, fontSize: 30)))));
+        ));
   }
 }
