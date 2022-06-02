@@ -526,7 +526,9 @@ class _RegisterState extends State<Register> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeMap(),
+            builder: (context) => HomePage(
+              siteList: [],
+            ),
           ));
     }
 
