@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:map/Details/DetailsScreen.dart';
+import 'package:map/home/HomePage.dart';
 
 import '../Entities/Site.dart';
 //import 'home_page_icons_icons.dart';
@@ -49,10 +50,17 @@ class _FeedScreenState extends State<FeedScreen> {
         backgroundColor: Colors.white,
         title: const Text('                  Feed',
             style: TextStyle(color: Colors.black)),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.search, color: Colors.black),
-        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage(siteList: [])),
+              );
+            },
+            icon: const Icon(Icons.map, color: Colors.black),
+          ),
+        ],
       ),
       body: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('sites').snapshots(),
