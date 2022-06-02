@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Details/Comments.dart';
 import 'Feed/feed_screen.dart';
+import 'home/MapPreferences.dart';
 import 'home/SearchBar.dart';
 import 'signin/user_state.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -13,7 +14,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  await MapPreferences.init().then((value) => runApp(MyApp()));
 }
 
 class MyApp extends StatelessWidget {
