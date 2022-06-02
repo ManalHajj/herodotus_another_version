@@ -7,6 +7,7 @@ class MapPreferences {
   static const String locationLatitudeKey = "latitude";
   static const String locationLongitudeKey = "longitude";
   static const String mapTypeKey = "mapType";
+  static const String location = "locationActivated";
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -20,6 +21,9 @@ class MapPreferences {
   static void setMapType(String type) async =>
       await _preferences.setString(mapTypeKey, type);
 
+  static void setLocationState(bool state) async =>
+      await _preferences.setBool(location, state);
+
   static LatLng getLocation() {
     return LatLng(_preferences.getDouble(locationLatitudeKey) ?? 0,
         _preferences.getDouble(locationLongitudeKey) ?? 0);
@@ -28,5 +32,9 @@ class MapPreferences {
   static MapType getMapType() {
     String? type = _preferences.getString(mapTypeKey);
     return (type == "satellite") ? MapType.satellite : MapType.normal;
+  }
+
+  static bool getLocationState() {
+    return _preferences.getBool(location) ?? false;
   }
 }
