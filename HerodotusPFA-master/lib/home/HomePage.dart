@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:map/Add/addScreen.dart';
+import 'package:map/DataController.dart';
 import 'package:map/home/MapPreferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui' as ui;
@@ -15,7 +17,6 @@ import 'dart:ui' as ui;
 import '../Details/DetailsScreen.dart';
 import '../Entities/Site.dart';
 import '../home_page_icons_icons.dart';
-import 'HomeMap.dart';
 import 'SearchBar.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,8 +47,50 @@ class _HomePageState extends State<HomePage> {
   late Uint8List mySiteMarkerIcon;
   //late Marker marker;
   StreamSubscription<LocationData>? _locationListener = null;
+  DataController dataController = new DataController();
 
-  bool _activatedSearch = true;
+  double calculateDistance(LatLng a, LatLng b) {
+    var p = 0.017453292519943295;
+    var r = 0.5 -
+        cos((b.latitude - a.latitude) * p) / 2 +
+        cos(a.latitude * p) *
+            cos(b.latitude * p) *
+            (1 - cos((b.longitude - a.longitude) * p)) /
+            2;
+    return 12742 * asin(sqrt(r));
+  }
+
+  Future nearSites() async {
+    List<Marker> sites = [];
+    LocationData myLocation = await currentLocation.getLocation();
+
+    return dataController.getData('sites').then((value) {
+      if (myLocation.latitude == null && myLocation.longitude == null) return;
+      LatLng position = LatLng(myLocation.latitude!, myLocation.longitude!);
+
+      value.docs.forEach((siteQuery) {
+        Site site = Site.queryToSite(siteQuery);
+        double distance = calculateDistance(position, site.coordinates!);
+        print("My distance is " + distance.toString());
+        if (distance <= 10) {
+          site
+              .siteToMarker(BitmapDescriptor.fromBytes(mySiteMarkerIcon))
+              .then((value) {
+            sites.add(value!);
+            print("my distance is " + sites.length.toString());
+            setState(() {
+              _markers.addAll(sites);
+            });
+          });
+          print("my distance is valid");
+        }
+      });
+
+      print("my last distance is " + sites.length.toString());
+    });
+  }
+
+  bool _activatedSearch = MapPreferences.getLocationState();
   Icon _findMe = Icon(
     Icons.my_location,
     color: Colors.white,
@@ -97,7 +140,11 @@ class _HomePageState extends State<HomePage> {
             icon: BitmapDescriptor.fromBytes(markerIcon),
             markerId: const MarkerId("Me"),
             position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)));
-        _markers.addAll(addSearchedSites());
+        if (widget.siteList.isNotEmpty)
+          _markers.addAll(addSearchedSites());
+        else
+          nearSites();
+
         _locationListener?.cancel();
       });
     });
@@ -161,6 +208,8 @@ class _HomePageState extends State<HomePage> {
         _locationListener?.cancel();
       }
     });
+    print("set location to " + _activatedSearch.toString());
+    MapPreferences.setLocationState(_activatedSearch);
   }
 
   void _addMe(LatLng ll) {
