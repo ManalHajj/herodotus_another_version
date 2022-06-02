@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:map/Details/DetailsScreen.dart';
+import 'package:map/SideBar.dart';
 import 'package:map/home/HomePage.dart';
 
 import '../Entities/Site.dart';
@@ -50,6 +51,15 @@ class _FeedScreenState extends State<FeedScreen> {
         backgroundColor: Colors.white,
         title: const Text('                  Feed',
             style: TextStyle(color: Colors.black)),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SideBar()),
+            );
+          },
+          icon: const Icon(Icons.person, color: Colors.black),
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -181,14 +191,14 @@ class _FeedScreenState extends State<FeedScreen> {
                   );
                 });
           }),
-      bottomNavigationBar: CurvedNavigationBar(
+      /*bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: const Color(0xff699BF7),
           onTap: (index) {},
           items: <Widget>[
             Icon(Icons.location_on, size: 30),
             Icon(Icons.home, size: 30),
             Icon(Icons.person, size: 30),
-          ]),
+          ]),*/
     );
   }
 }
