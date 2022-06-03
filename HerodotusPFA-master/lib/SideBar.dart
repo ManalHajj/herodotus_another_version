@@ -6,6 +6,12 @@ import 'signin/SignIn.dart';
 
 class SideBar extends StatelessWidget {
   final user = FirebaseAuth.instance.currentUser!;
+  String pic(String img) {
+    if (user.photoURL == null) {
+      return "https://images.unsplash.com/photo-1528543606781-2f6e6857f318?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1965&q=80";
+    }
+    return img;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class SideBar extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.network(
-                  user.photoURL.toString(),
+                  pic(user.photoURL.toString()),
                   fit: BoxFit.cover,
                   width: 90,
                   height: 90,
