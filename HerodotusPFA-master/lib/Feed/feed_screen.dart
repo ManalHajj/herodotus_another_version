@@ -49,8 +49,8 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('                  Feed',
-            style: TextStyle(color: Colors.black)),
+        centerTitle: true,
+        title: const Text('Feed', style: TextStyle(color: Colors.black)),
         leading: IconButton(
           onPressed: () {
             Navigator.push(
